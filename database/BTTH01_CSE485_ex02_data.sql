@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS `btth01_cse485` 
+CREATE DATABASE IF NOT EXISTS `btth01_cse485` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
 USE `btth01_cse485`;
 
 CREATE TABLE IF NOT EXISTS `baiviet` (
@@ -220,6 +220,25 @@ INSERT INTO `baiviet` (`ma_bviet`, `tieude`, `ten_bhat`, `ma_tloai`, `tomtat`, `
 	(199, 'Hãy Cùng Nhau Xây Dựng Một Thế Giới Tình Yêu Bền Vững Và Hạnh Phúc', 'Điều Anh Biết', 17, 'Morbi quis tortor id nulla ultrices aliquet. Maecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui. Maecenas tristique, est et tempus semper, est quam pharetra magna, ac consequat metus sapien ut nunc. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Mauris viverra diam vitae quam. Suspendisse potenti. Nullam porttitor lacus at turpis. Donec posuere metus vitae ipsum. Aliquam non mauris.', 'Aliquam sit amet diam in magna bibendum imperdiet. Nullam orci pede, venenatis non, sodales sed, tincidunt eu, felis. Fusce posuere felis sed lacus. Morbi sem mauris, laoreet ut, rhoncus aliquet, pulvinar sed, nisl. Nunc rhoncus dui vel sem. Sed sagittis. Nam congue, risus semper porta volutpat, quam pede lobortis ligula, sit amet eleifend pede libero quis orci. Nullam molestie nibh in lectus. Pellentesque at nulla.', 41, '2021-09-21 00:00:00', NULL),
 	(200, 'Đến Một Trái Tim Đang Mong Chờ', 'Đường Tôi Chở Em Về', 5, 'Vestibulum rutrum rutrum neque. Aenean auctor gravida sem. Praesent id massa id nisl venenatis lacinia. Aenean sit amet justo. Morbi ut odio. Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo. In blandit ultrices enim. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin interdum mauris non ligula pellentesque ultrices. Phasellus id sapien in sapien iaculis congue.', 'Mauris lacinia sapien quis libero. Nullam sit amet turpis elementum ligula vehicula consequat. Morbi a ipsum. Integer a nibh. In quis justo. Maecenas rhoncus aliquam lacus. Morbi quis tortor id nulla ultrices aliquet. Maecenas leo odio, condimentum id, luctus nec, molestie sed, justo. Pellentesque viverra pede ac diam. Cras pellentesque volutpat dui.', 22, '2022-08-23 00:00:00', NULL);
 
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_DSBaiViet`(IN p_ten_tloai VARCHAR(50))
+BEGIN
+  DECLARE v_ma_tloai INT;
+  
+  SELECT ma_tloai INTO v_ma_tloai
+  FROM baiviet
+  WHERE ten_tloai = p_ten_tloai;
+  
+  IF v_ma_tloai IS NULL THEN
+    SELECT 'Thể loại không tồn tại' AS Error;
+  ELSE
+    SELECT baiviet.*
+    FROM baiviet
+    WHERE ma_tloai = v_ma_tloai;
+  END IF;
+END//
+DELIMITER ;
+
 CREATE TABLE IF NOT EXISTS `tacgia` (
   `ma_tgia` int(10) unsigned NOT NULL,
   `ten_tgia` varchar(100) NOT NULL,
@@ -332,47 +351,304 @@ INSERT INTO `tacgia` (`ma_tgia`, `ten_tgia`, `hinh_tgia`) VALUES
 CREATE TABLE IF NOT EXISTS `theloai` (
   `ma_tloai` int(10) unsigned NOT NULL,
   `ten_tloai` varchar(50) NOT NULL DEFAULT '',
+  `SLBaiViet` int(11) DEFAULT 0,
   PRIMARY KEY (`ma_tloai`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `theloai` (`ma_tloai`, `ten_tloai`) VALUES
-	(1, 'Pop'),
-	(2, 'Rock'),
-	(3, 'Jazz'),
-	(4, 'R&B'),
-	(5, 'Hip hop'),
-	(6, 'Country'),
-	(7, 'EDM (Electronic Dance Music)'),
-	(8, 'Classical'),
-	(9, 'Blues'),
-	(10, 'Reggae'),
-	(11, 'Funk'),
-	(12, 'Soul'),
-	(13, 'Gospel'),
-	(14, 'Disco'),
-	(15, 'Punk'),
-	(16, 'Metal'),
-	(17, 'Alternative'),
-	(18, 'Folk'),
-	(19, 'Indie'),
-	(20, 'Electronic'),
-	(21, 'Ambient'),
-	(22, 'Dance'),
-	(23, 'Latin'),
-	(24, 'Salsa'),
-	(25, 'Reggaeton'),
-	(26, 'Bossa Nova'),
-	(27, 'Samba'),
-	(28, 'Flamenco'),
-	(29, 'Bollywood'),
-	(30, 'K-Pop'),
-	(31, 'J-Pop'),
-	(32, 'World'),
-	(33, 'Celtic'),
-	(34, 'Opera'),
-	(35, 'Acoustic'),
-	(36, 'Trance'),
-	(37, 'Techno'),
-	(38, 'House'),
-	(39, 'Rap'),
-	(40, 'Instrumental');
+INSERT INTO `theloai` (`ma_tloai`, `ten_tloai`, `SLBaiViet`) VALUES
+	(1, 'Pop', 9),
+	(2, 'Rock', 4),
+	(3, 'Jazz', 8),
+	(4, 'Nhạc trữ tình', 10),
+	(5, 'Hip hop', 8),
+	(6, 'Country', 8),
+	(7, 'EDM (Electronic Dance Music)', 5),
+	(8, 'Classical', 5),
+	(9, 'Blues', 5),
+	(10, 'Reggae', 9),
+	(11, 'Funk', 5),
+	(12, 'Soul', 7),
+	(13, 'Gospel', 4),
+	(14, 'Disco', 3),
+	(15, 'Punk', 7),
+	(16, 'Metal', 6),
+	(17, 'Alternative', 6),
+	(18, 'Folk', 7),
+	(19, 'Indie', 10),
+	(20, 'Electronic', 11),
+	(21, 'Ambient', 10),
+	(22, 'Dance', 9),
+	(23, 'Latin', 3),
+	(24, 'Salsa', 5),
+	(25, 'Reggaeton', 3),
+	(26, 'Bossa Nova', 9),
+	(27, 'Samba', 7),
+	(28, 'Flamenco', 3),
+	(29, 'Bollywood', 5),
+	(30, 'K-Pop', 9),
+	(31, 'J-Pop', 0),
+	(32, 'World', 0),
+	(33, 'Celtic', 0),
+	(34, 'Opera', 0),
+	(35, 'Acoustic', 0),
+	(36, 'Trance', 0),
+	(37, 'Techno', 0),
+	(38, 'House', 0),
+	(39, 'Rap', 0),
+	(40, 'Instrumental', 0);
+
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `UpdateSLBaiViet`()
+BEGIN
+  DECLARE x INT DEFAULT 1;
+  
+  WHILE x <= 40 DO
+    UPDATE theloai
+    SET SLBaiViet = (SELECT COUNT(*) FROM baiviet WHERE ma_tloai = x)
+    WHERE ma_tloai = x;
+    
+    SET x = x + 1;
+  END WHILE;
+END//
+DELIMITER ;
+
+CREATE TABLE IF NOT EXISTS `users` (
+  `user_id` int(10) unsigned NOT NULL,
+  `user_name` varchar(50) NOT NULL,
+  `user_pass` varchar(50) NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `users` (`user_id`, `user_name`, `user_pass`) VALUES
+	(1, 'user1', '$2a$04$QckyImqBX0ydsXmTG.JSUOH0LuYw29mkyzQ3EAnEU4J'),
+	(2, 'user2', '$2a$04$H1.g.8uu/xzXfQ5HNkOwa.EsjtzI2iJC6L58qI4Qg2W'),
+	(3, 'user3', '$2a$04$xhOOiUicZWIgwE15peBDsOEoDDCPr730ZA5KAPcO4F4'),
+	(4, 'user4', '$2a$04$CBvWwQUDbiSgaNuGV0JlJ.ithPxdITuS73KmAR3JbjQ'),
+	(5, 'user5', '$2a$04$B8l/vhPfJnHUwqO9N4eomeq6RrsFlgfZXZJSnU44YQs'),
+	(6, 'user6', '$2a$04$53Iqh9NDB5B5THRTskbwdOZbXsIU4o7buMWR.K7EZNC'),
+	(7, 'user7', '$2a$04$.n7WBbTwBzIEGXry3OT6cOzL8MEs0BN4BO688FG2I2b'),
+	(8, 'user8', '$2a$04$3zcWcy9q6zjKtSGvW7sv8e3pTxUZpXjhgi9NfidF5Ct'),
+	(9, 'user9', '$2a$04$q/b0Lp6CRynlMddmchUqm.dKHr1xj6Cn3tqCtFYgpLv'),
+	(10, 'user10', '$2a$04$C6n1A.1RBbtktABlCgydlelyyW7L5wNvf0GRryix2fY'),
+	(11, 'user11', '$2a$04$IBuWyhxI08bkeM7BtOPfXel8dIeZjd0jR1cbrgfFnBP'),
+	(12, 'user12', '$2a$04$/0Va4Y/.FFGPJ3uSoZQ9wO4Ofsh0HIvsSwyk5Pk.O8M'),
+	(13, 'user13', '$2a$04$DB6rBhOVvtcrf6CCcqUhbuTV5ODU5uzDg87nx5XSCsb'),
+	(14, 'user14', '$2a$04$R8sM7H1DgUF6e2BDDAuLteqzx1D50xbsCJv/KK7TlbG'),
+	(15, 'user15', '$2a$04$zLMIugd4luqQwJVXG5RZeevdsIROms8jVuiDgeXs2UK'),
+	(16, 'user16', '$2a$04$N11V8seq.heR7gZzmZUbjer0g2vcnlxgI.Qf6gnITRZ'),
+	(17, 'user17', '$2a$04$oQ6Gxj7kyeSDpJA1Klt1D.YiUHK971CRVASiSnFv/My'),
+	(18, 'user18', '$2a$04$6NEzhh0ZDS/pMp8C4gFuHu0b/XpLM6sMCV7YaRRBN2Z'),
+	(19, 'user19', '$2a$04$oceihbz0SWODIKLFR0HgU.vJtXv6a/K5DEFLpuNstZh'),
+	(20, 'user20', '$2a$04$fLfosyPdLDHWfBipeSw0T.CpcT5AMKHwD6bh34Knw./'),
+	(21, 'user21', '$2a$04$Mq6pOib4Sz.NOvYssOdlL.PlDT7ardEg1WDoBA5bUqV'),
+	(22, 'user22', '$2a$04$ZhSPznjENcqpCAriwyh3ous8vG6/XRr/FGbpjVdeEt4'),
+	(23, 'user23', '$2a$04$50FPoa2fEelGb1QgmHRQSeJH5Tj22qXuBaqGoUdhTNK'),
+	(24, 'user24', '$2a$04$zWqT1ga/lIlMpHZXtX5tD.dPXgjGFNefEecX5X9QvLQ'),
+	(25, 'user25', '$2a$04$v9/sPNsfKH5rgRhf85Nlvez/gijtyZ5TO/Tg7wHmk9q'),
+	(26, 'user26', '$2a$04$qSC5Cm7BlnmxwyHVj9cmBeg3E1d/QcdDb./d6D7QDym'),
+	(27, 'user27', '$2a$04$aSHq8XG6qbJDxG5W/6gq3.SG/Ji1wY9xwln1VLarGNk'),
+	(28, 'user28', '$2a$04$4cbwrYFT3tXHCiknmj.G0OW1Yq1nha8fwiEa6s4T1/F'),
+	(29, 'user29', '$2a$04$.jgn36F8zNA1X715inGTj.LDWtcxpj8XR7ecSwZDCfU'),
+	(30, 'user30', '$2a$04$vU6FyHI5cAmuaka9Pdvbyuf8jgmt5tTC0dvfOtoWx4p'),
+	(31, 'user31', '$2a$04$0JndBWhdT6eQaYQpa2EAi.SbJgAQw1r7Cbkknm05dqg'),
+	(32, 'user32', '$2a$04$NNpDnVZAHwwemgV3qkuwe.pzUoSfNHXkUkKNZlxk4tE'),
+	(33, 'user33', '$2a$04$PlUBDZWwN4G0b6bnsKkt.epCazFXbgyw0Hz5FHAMnK5'),
+	(34, 'user34', '$2a$04$kuN.4WdLwFwhj59La60B2OUuC2R/F83C86pnZnIgr9b'),
+	(35, 'user35', '$2a$04$VS0c7iOztGpiJ/ZiBrbFI.ceW.kqE1M0hLyS961KrsQ'),
+	(36, 'user36', '$2a$04$HPLQns6yRh20vcSlGFDK0O3fjegv/JdK0E0c7kzgREb'),
+	(37, 'user37', '$2a$04$7fGyg8hXDvBsQLLrwdLHdO2jvsHo.2E1D1eN65ofPQa'),
+	(38, 'user38', '$2a$04$ce9Gn0/eR51mtne2Dr2vhOoC7OCAKzhTPiW3RBQ.kk4'),
+	(39, 'user39', '$2a$04$.voyVvTkOoweMEYACDYdFecRrX5clw1NeEwfYkxlGLQ'),
+	(40, 'user40', '$2a$04$iWjujYqWpe48WNUY5RML7up8I0QAL3/Irkoy9ttZZcR'),
+	(41, 'user41', '$2a$04$D3WevK03RQTLqdpfXxRuIO.AFeA72/LLgmMkbHgLabB'),
+	(42, 'user42', '$2a$04$DoOTVp8D/yg96FIiID8nJ.ZxCgcy.ox/fjJFZNeSbJK'),
+	(43, 'user43', '$2a$04$KNMRmz2kCQCQ2E0wAH090e4IXCQqVuAJq8EFfs4VKm8'),
+	(44, 'user44', '$2a$04$t5Jh6svyt1seQdwPm5s13.7fPV6M0TNKNBzsngGdM59'),
+	(45, 'user45', '$2a$04$R9GumjjbQNIpK3rE6oLnu.ks4Rxl3YR4b3QFIWlrcuR'),
+	(46, 'user46', '$2a$04$cW74.bpM3iH82UIvkxDK/u1atfY3YSFbJi4Thuv/Gzt'),
+	(47, 'user47', '$2a$04$Mv8k739hBdrdvGFcRbcaNu408y0GGclI/4bVUU8hSxW'),
+	(48, 'user48', '$2a$04$2FGqIH5eXqmJyb9E5acItepZdFRAyFvXYURQrEV8x2w'),
+	(49, 'user49', '$2a$04$PeR4YSZ13JzEJ1/FJIRLCO1pEku8IECNi2N1hk0UjJm'),
+	(50, 'user50', '$2a$04$4iBmhpuD3atMsTq48s5U.OjU1hUVaAzrcbsZeG7bW3D'),
+	(51, 'user51', '$2a$04$EUSjEolf7.2TYZcsWg/MtuZ1nl4RPpknp/1sZro33Qv'),
+	(52, 'user52', '$2a$04$0nEZ3UinnT91MANHZkv/R..ZPI0NhuwO9wDFyoG9c0C'),
+	(53, 'user53', '$2a$04$K2nPL2c3yuhSU/H1SKz8ZORKhUKvsbaLdn3REPi5592'),
+	(54, 'user54', '$2a$04$Ge7exu.JsurcBHWkMcaHCu178X07ST4J.rNoJE/Ym5a'),
+	(55, 'user55', '$2a$04$0NCjGJjlYQR6pXR9qNosmedNIvuB600eHIEeS7GCElv'),
+	(56, 'user56', '$2a$04$tgULxWvWuHNF0WCaXWToduIJY61AP2xWOfpXhS5VRQ7'),
+	(57, 'user57', '$2a$04$vLW22vLv4XP52.xyQZ3c2eZI9M2n.vqV6lqyHjeODET'),
+	(58, 'user58', '$2a$04$n/eGNgsY2EDCZB6kNMqyZ.28VXyJGBdP9/5KFKUOFHG'),
+	(59, 'user59', '$2a$04$gjd3ooXHG0Ej5waVDOJmle8J.tWJAtTc4RE4ycmAge0'),
+	(60, 'user60', '$2a$04$NFZyQ747VPkORcci9yWER.Ycm2UzcnA3CPUIIeVSQAI'),
+	(61, 'user61', '$2a$04$i2WV0JkN/Q5PIhdohxF9HOKFE1D0eUPLnM4yFJQkSO/'),
+	(62, 'user62', '$2a$04$fbH7GOgvLLopqLbyZZhy5uk37HGMR8WkWVLsUXeo/vj'),
+	(63, 'user63', '$2a$04$ND4hi/RghZEsAzVwJDP2qu3cTFfmgW/HTvEZ/ZiV/tO'),
+	(64, 'user64', '$2a$04$9uDdJi29TQkzH37yR1OTi.EdH2E7QD5akSbWWMvwOpH'),
+	(65, 'user65', '$2a$04$ZaHfeQ2onXiHgS/xrDSQUOOIiO6Q2B9M2J2GMx.n/O4'),
+	(66, 'user66', '$2a$04$BjTBZNK9opVrDk2ZWf6vM.vLcpiFogfjfbt.3yWhlKB'),
+	(67, 'user67', '$2a$04$UxA0/Kp.jhEPpU19pVQsO.hDuylJWaXW/kLwx1uki6i'),
+	(68, 'user68', '$2a$04$z1fvivAnEebnRj8udeHdP./s.SON6EMob3gZAKTeV9M'),
+	(69, 'user69', '$2a$04$glyrxgtEkixday5265ny0.agKTNn8OjeHTisYOSxdfr'),
+	(70, 'user70', '$2a$04$yveoVVD45ba7a9n0qonn2OSBCyTgmn9pEK/ptwfNX3h'),
+	(71, 'user71', '$2a$04$rN3VskkMVDJGIuJUW6iJaeH0z49oS2p1gC6f/49VDUq'),
+	(72, 'user72', '$2a$04$zAgWNgx8kPuIS6J.o9CpkeCJjq5gHBj..MiRxCT0F7P'),
+	(73, 'user73', '$2a$04$iaU6c1I4KvOtWN0XDi8ypO9JKji5y2jU8tNJRyQ8bJT'),
+	(74, 'user74', '$2a$04$6u6Huyw43jv/cTXkkItfvOrGbIsxGamoNPm..RwhLG5'),
+	(75, 'user75', '$2a$04$i5fkrenvZkKDY1NlONGsr.Fdo8zll8jHG92FJRbw9G6'),
+	(76, 'user76', '$2a$04$1bzV6rnbTUPmGJxbPgYzeeJ7v0e6xIhiSl9mRY2oMR7'),
+	(77, 'user77', '$2a$04$R8oAi7gXVzUn9zAqXPuv0.ZGtiRmQFw8.1WDLC3Y8Vu'),
+	(78, 'user78', '$2a$04$CvgiUHW4dSS.S424r3.Hp.cZVVQQGVF24mTZjquD.b7'),
+	(79, 'user79', '$2a$04$mo41PZryqsEvxgV2whKvd.m8DFNSfRIP9U/WuUjhukw'),
+	(80, 'user80', '$2a$04$vzyRF5m5LH6EEiP9MP4X3OEvD/90pGtk/rSCusgfsZE'),
+	(81, 'user81', '$2a$04$Q/sWhbczVzPQhRVNHLliyeVyX.0QkCyFFmUo27l9yOe'),
+	(82, 'user82', '$2a$04$THhqXD0yMsapa9nKephJ5.0inSZaeDHHInLw.l/LejC'),
+	(83, 'user83', '$2a$04$T.WZbQEnXZQ9Zdhcj.WRLupzlJK61Zlozt0.lZa4L8K'),
+	(84, 'user84', '$2a$04$MB4xSFy2jFaWEzonTuZeZeuNowKv6VvHJvyC1L8zdCe'),
+	(85, 'user85', '$2a$04$pHYBJ4AE.WccIrwkBrml3ui23PKUOTyr45Gpt5a8v//'),
+	(86, 'user86', '$2a$04$wgAP98yfTe0QnjJBKZLxnulny2o/E.yh5uXOSz3ZLH5'),
+	(87, 'user87', '$2a$04$2b9mJc.Ho2gY60qHR5FLoOgYNFk62hRRM8pcUMmOEuW'),
+	(88, 'user88', '$2a$04$I0c7v6bqD0O2B5SiP2l8eO0Nd6kKM6K.FlSD6NthTHZ'),
+	(89, 'user89', '$2a$04$Xxotm6vtVzgGfTRAGGgYUuu82pyW0qXbsr62Ac8/9a4'),
+	(90, 'user90', '$2a$04$splFezVkFrafHzj3AK5xq.CoUe8TvVoXUPYIg7defHK'),
+	(91, 'user91', '$2a$04$VNe3DVDyTIJaQW77DYmQ/.CSRPLyySej7ZwNL.KBqTe'),
+	(92, 'user92', '$2a$04$peggXbTnzA8fNEd6nq8KoORGlTCzYT42bmti1kHa1i2'),
+	(93, 'user93', '$2a$04$Z2Rj69lrxiECHdMDqhwWmOHxez357c5uYtOjSKuKdb8'),
+	(94, 'user94', '$2a$04$hyWPXmmJ9B8DM1qLenJ7Sulm.pKi4G01CfH9j67VryD'),
+	(95, 'user95', '$2a$04$hsAgH9ZQeNazKiQElXCEIucZcygBtx5Lv0dM31YzNVm'),
+	(96, 'user96', '$2a$04$dgqoKLNYPKTwMBXYQqfSX.EzCbxzIaX656b4tiZy71t'),
+	(97, 'user97', '$2a$04$oAZ3xi4j258hFGA331UW5OBQ/vgBF2FcKZOFuZ0OJmP'),
+	(98, 'user98', '$2a$04$93uslJKyQPR9FU2RdfiI0eQ33VueflPag8v8tnPN96t'),
+	(99, 'user99', '$2a$04$3AGtnpq9JdX6GU8lOEW5C.MJCXj1/M258RxBy1ln85I'),
+	(100, 'user100', '$2a$04$DzYtlnxfEr0i7hXV8L5A7edI3YEn7rGwwmVXPgnBD.i'),
+	(101, 'user101', '$2a$04$xdcioE1KDdv1ceeKWaXrveat.ALU9s2N6UYrEAFkDVI'),
+	(102, 'user102', '$2a$04$aWFl/UXeWyV2izf8wOoxXujqOvKM0jgPFGgbSIP2QAs'),
+	(103, 'user103', '$2a$04$V2D3xdD8jE94nemNvsiYMeO/QXdwxi9/KvepKBub02p'),
+	(104, 'user104', '$2a$04$mZ57BrGAUL/bCzq.31rsgOieIvb4CmAlfv1U7.AO6DA'),
+	(105, 'user105', '$2a$04$tQkVinwd9BX4OiRPd19zJOQykruYooBlTJPiPBGCi6N'),
+	(106, 'user106', '$2a$04$yxrnsCZl.Pwczck6wev2nuB2uUYHAkDILJy6Iho1nIW'),
+	(107, 'user107', '$2a$04$iV2itteYGAiyBrye80YraOuuRgl4Rjm6lI6.GG117Uj'),
+	(108, 'user108', '$2a$04$Xqd3zRZW6HrNOViLAe4YIeWXAVU81TW.ROJRu/lCAkg'),
+	(109, 'user109', '$2a$04$V.Q1GZGYDAlc7eyNxmeFMeUaMEz6W.wt7Dy4QDsX1RA'),
+	(110, 'user110', '$2a$04$/ZRYsDrur8HixEmQYYn7QOWOV39sU/MBs3dK5PrxACZ'),
+	(111, 'user111', '$2a$04$sc.CR9MQdsjjFium/mH8/ug24sD2XiHxxLxBgHaIBTd'),
+	(112, 'user112', '$2a$04$XRmrCAofsfba/11wgBPOXu312NKhteL/52SPQUAIthl'),
+	(113, 'user113', '$2a$04$0Rxi7qjKRY.9y4/FoxuDxO4E2Dn2aZT6Nm.Ga46vGbg'),
+	(114, 'user114', '$2a$04$GGrtTNm3K7Mrdl5UctpEne3XUfY2K4ZnQZBuDQdD037'),
+	(115, 'user115', '$2a$04$ZrC7MTdgfNJYZR2gGmGsOOwxqCO3mFoaWNRlSWj0g7K'),
+	(116, 'user116', '$2a$04$YUr.u5W.qeKyaGmA0T3Zae0ZcDuGsjhnEHT642S6sKj'),
+	(117, 'user117', '$2a$04$wT4l824dsbXGcMct8nx.FuGZDfXghlkpa2W50BT1Wnx'),
+	(118, 'user118', '$2a$04$SGY3lmuAX91gSbEBNnWq8.QOt3aCyhcNTe9ezCEC1I2'),
+	(119, 'user119', '$2a$04$TzLGfj8exPtNTWWt9eIe.O1em9wZNouJDZ4sONVHHuK'),
+	(120, 'user120', '$2a$04$Y5D4gL1YBbmyP0QyPAGRdu4Jkci6IiSd9kcnpyH9yYR'),
+	(121, 'user121', '$2a$04$.89iEWryJ1yfHTmhLoHIKukcvUMYGF/c5sO4f7sqa2M'),
+	(122, 'user122', '$2a$04$Ho8z3HNDnAUDvTP1p1RbS.cf9OgSY97HcXXYj5NAIOQ'),
+	(123, 'user123', '$2a$04$eR1cEkvrdK/ugZ/FZtSkGOpIGIsTnp..DoWuVr8pKmv'),
+	(124, 'user124', '$2a$04$kC6ndBn5shb0hv7L4AlxPOeoIR1kggbty/ujm0cmjcB'),
+	(125, 'user125', '$2a$04$E9WaxJebCfoCRJjEDpV3U.ZgsutmIlD42mDZcw6pvTG'),
+	(126, 'user126', '$2a$04$.VmuN5Ji9YrLeyPS5W1mdOt3O5i0Ki4cVeIEdc9ZxXp'),
+	(127, 'user127', '$2a$04$FkQbJtjIqKYmA39SkX3g.Ok6BFtcKZ4vuM8M3J37L0w'),
+	(128, 'user128', '$2a$04$7WArwNIfjwKSpDSlA9.xLO8xZdE9yOGW5wqokZoQKVt'),
+	(129, 'user129', '$2a$04$zdGbEtrYvKWeLGvEsnRoseqUBUaTimSBOnzneK7sIye'),
+	(130, 'user130', '$2a$04$iz7Rp3RcMlfn0mOZdSNYqeOq52VitT4XUkgJ2IZ.z/Z'),
+	(131, 'user131', '$2a$04$wSP4y1Yxc5IEOe9DffFr8.QFyJmtK34whsI8Ti8JtKm'),
+	(132, 'user132', '$2a$04$ianoeQpC/5inbyk8J1JnIutpeXkSD6ByO./ua.Nzxq8'),
+	(133, 'user133', '$2a$04$DWrgTBueu7W0qJlZhTcYBeD.e.B04FFewInmoz46vHU'),
+	(134, 'user134', '$2a$04$by6rvJQpM3KD6SwL8DSTOu4A6dzJjI4UplRrgz6VpPl'),
+	(135, 'user135', '$2a$04$xQJVzDxm3yfXievWirQBfOHOJ1UhftnBEOaPeEWHDlq'),
+	(136, 'user136', '$2a$04$rRCy/0nvv00zad.kKle20uaif/INcfk8cnZHGrsmDvK'),
+	(137, 'user137', '$2a$04$m6uTK2WzipE6H9R4tGDRouWnl0k3lzyDjjmBx68FzC5'),
+	(138, 'user138', '$2a$04$0XqWQ2X.sawgSgLBPUeQbuMRoK3hwtLAup/0JBIar0B'),
+	(139, 'user139', '$2a$04$xZtBhZHt0a2B8zEQeR1b.e.SqOfMp/pUsONcO6gMXq0'),
+	(140, 'user140', '$2a$04$RhHs2tAvYNMcyjhyDaA8Oezl9c9Jql65QpFU8.Fa5Ij'),
+	(141, 'user141', '$2a$04$9zoYHtqNXjUKibc21YLJx.c1wrUT3p/LNvzauvU7Fyh'),
+	(142, 'user142', '$2a$04$zR79buXXxRNwi0la86h8XeibIGwAmAh5fsUwJ7qVzrl'),
+	(143, 'user143', '$2a$04$pzCPeKxBNF87X9AVJtkYsezJ/JaMkCnH7M7DqjOnedI'),
+	(144, 'user144', '$2a$04$CAQiI1mfl1Z5HuAKs.q7fOR12fXxQt8UNEW2FhMvR.z'),
+	(145, 'user145', '$2a$04$JAHs5m3iUhNweBHXPWDIVOmo97D9nEs0PYACLTmQcMU'),
+	(146, 'user146', '$2a$04$GnrOeM6jjuSCKpvvn3O1NONfKDy4QJPIdmXdM7PCKWa'),
+	(147, 'user147', '$2a$04$RGQ34sH86Cob7TZe8Ll.FO5I8LbDRYncMLGlHDmrkaL'),
+	(148, 'user148', '$2a$04$IxLPbxIA/bEf85iwSQzpoumLF/44mVFmOt0tUoAvAj0'),
+	(149, 'user149', '$2a$04$dMxWh9i7/ITWVlivgI4HgOcj8pIxgwHyONPQKQB6UiD'),
+	(150, 'user150', '$2a$04$1KJvFeF3gD559W4nUoFDi.HBWMDVQtw/H7oi81Uh.Ns'),
+	(151, 'user151', '$2a$04$yCU0SX.xgNN10p81DsPEzuGP2qw1ighM2cgiBbXlJUi'),
+	(152, 'user152', '$2a$04$P4NGMIf06o54if9l.jGfd.l3TWOPayDcb/3/98.m2v1'),
+	(153, 'user153', '$2a$04$ump5l7LSNmo0rnLFrwHpTuBgP3np.vQppeda3DkaSJz'),
+	(154, 'user154', '$2a$04$kIXgJknhnukcfPzeNARI3ec/RzXMEZnc.aR3hJFNOHK'),
+	(155, 'user155', '$2a$04$BCVrsG3OZyO7KZB7j0WJuO3ohUSVCsA3QLcd3NhJYT7'),
+	(156, 'user156', '$2a$04$nXJs6hlAcx3qJ7R2AGnscunRI6Zbl3zCn047xBABxQ1'),
+	(157, 'user157', '$2a$04$52bnofSmmqOvFUqg39mcVeLgzTR0Pq8nbTPnt3u.7hJ'),
+	(158, 'user158', '$2a$04$ruXask8Sp1iZzgqj2deqV.NvOviM14fFDyJIIz1ZYlI'),
+	(159, 'user159', '$2a$04$oqzRF4sllmnxmoMB.QvTHuJ4sAoSvaSe6aStPvk6KYN'),
+	(160, 'user160', '$2a$04$Dax2ir.QirVTHwFVkjhTr.DGOlzD4dgNARjJR5JAJum'),
+	(161, 'user161', '$2a$04$aKm/pNGjy7tluwGDF3NY..Q/EH/DzrZ.iNNkDhnvNaA'),
+	(162, 'user162', '$2a$04$am1PF2SvYVdB35rgroe/Y.Ovl3gCDzHq9W96YQ/H1VU'),
+	(163, 'user163', '$2a$04$OD/LisXPpapV8vX3Lu.zk.WV2ge92JLM5WXZ9tryDhT'),
+	(164, 'user164', '$2a$04$Wq/YVbY5PGymosLgYF/Ogeixwn9aWrU3kOQHRZWuX/f'),
+	(165, 'user165', '$2a$04$NBEKD/pa97BLgNn2GLh08eTzZ1L3mUh3UWuCFrTjCVY'),
+	(166, 'user166', '$2a$04$uiL/LUtdjX2FSHnBzI.1kOW56aDIHCZ9TiaN0lO/mx2'),
+	(167, 'user167', '$2a$04$ScOcxlOuVYKUl5v6aYQYx.UqXVcusz.njrmR/V9LS5H'),
+	(168, 'user168', '$2a$04$qzJPNGRCIzYmeC9f4Ki1Ze9mQZ8G3YUxBr6eJN4ERpS'),
+	(169, 'user169', '$2a$04$5bucz1T8vQO/SWHxOLsaJ.5UwWQf7wHx18T0Dea3g0I'),
+	(170, 'user170', '$2a$04$trNjAPanyiF5j53KxigTlOjmsUKk4SDWxMzbl0e35dz'),
+	(171, 'user171', '$2a$04$HLGTTrOxvwVMpCqxHLJaN.eAC6oCP/03V/AJXIAjy0h'),
+	(172, 'user172', '$2a$04$..x6v0G2sLpqfHHmrWAnOekA1Ppd18bSkthB08Ryf5y'),
+	(173, 'user173', '$2a$04$NoRJresszw/7pJ6vPxKXy.sAxEXwYfDEpBV8MMf9FA1'),
+	(174, 'user174', '$2a$04$wZHJrUNE/BD93M3hy5ECGOlSfB6ZY4rKa8wXspAQbw9'),
+	(175, 'user175', '$2a$04$wUZXBpAgbvMN2pTSWjv91.QyclnfU0m5vG6z9qxbKWG'),
+	(176, 'user176', '$2a$04$DKwi9OPo/782KNdA.UbTNe0f3F14WumpL7W0aWNq.Ov'),
+	(177, 'user177', '$2a$04$.ps646xdizwnPOT6Ne/txuBxR6emZIKbRvyg5ijRvTF'),
+	(178, 'user178', '$2a$04$HOuW8N5hT3wJcgexCjpRH.EHK8tJIQ4MorCdxTMF2Bu'),
+	(179, 'user179', '$2a$04$VZlMEI7DGYAdMB1uOuIAOuVc.ONiydeQ8PqP0rlU6bi'),
+	(180, 'user180', '$2a$04$UuJvXGVeibT3URIN7Bydn.RtPhjoY5KjMIyRQm7BXfG'),
+	(181, 'user181', '$2a$04$4u8AEwnn8StNrvsj5aTC0OpMn9ZoTv0BP1ut1F2x9Oz'),
+	(182, 'user182', '$2a$04$kb2VsVFrtiUNns6HaRKXTe02xKAa2etiY6dms9ZQcty'),
+	(183, 'user183', '$2a$04$XVVC8LAx12hqHFGLoFAYUue8v0mS73JBeu9J7WMt4Tt'),
+	(184, 'user184', '$2a$04$9SLURyIYnQa1QToF39Pm5.xZJla8fxpnlgIGIgbnbK2'),
+	(185, 'user185', '$2a$04$iZuBcBB8hm/nWYYqx4Yadu7giZYxKSlxqgHqzWy3Zp1'),
+	(186, 'user186', '$2a$04$A.T/GTu4KAryV4bdmtZBa.tBKIsdqQtWVk8gdMdzNAc'),
+	(187, 'user187', '$2a$04$LsLyKqrePfTAYTGx1d1h/uHP/C9xr1OqqqgUsOtGow.'),
+	(188, 'user188', '$2a$04$g4dzV2RZ/JiOlyu6oZAe0.o2MvtGzNezw6OTI0dg92p'),
+	(189, 'user189', '$2a$04$pHCTgyLPq9BU9Eb5x/cY0eWHv.hobzNmnrc8v/hWiSn'),
+	(190, 'user190', '$2a$04$1EBW.ZvQUlh9W9ULOMdiZuJ4L4BW8/.zMiIFLZlAwaL'),
+	(191, 'user191', '$2a$04$o9MtovNpeNqTEqlGSM2ZwOCu1WNJFj.i3E7jcdTY/Oe'),
+	(192, 'user192', '$2a$04$.ltFIxgeE5U62CvY514O9ukG10Zh9YN1HoKQEitvdvU'),
+	(193, 'user193', '$2a$04$5KNBjylZ1kBN9nM.XtnGxeQlZ.mMff2v/0gcMdTmlsV'),
+	(194, 'user194', '$2a$04$buJ1eI/NfVMuf5qL/a4dUeJImfp963aNIWO0/eph2nC'),
+	(195, 'user195', '$2a$04$FQE5IutH..we...dMkTi3OIKpUH3JKvvCWWi5FrNnoW'),
+	(196, 'user196', '$2a$04$MAupecYa./ByL9u76BimPezMC32nQYrVObTwUcveRYM'),
+	(197, 'user197', '$2a$04$hualH9QkVqAT2Pg5wXsQj.Q5y07CotzfwtboBitPveW'),
+	(198, 'user198', '$2a$04$3r1AMe1S0S733f0gesm0pufheAiuzvNUDfPuGKku5AN'),
+	(199, 'user199', '$2a$04$MTHXMdFF4zVotXpk5Cdzx.A6KESG0Y/ysC7oOzd7Gys'),
+	(200, 'user200', '$2a$04$qSaDbVf2dxsChivhLU/BJ.n/YBwouEnv9kIwuO5HJR4');
+
+CREATE TABLE `vw_music` (
+	`ma_bviet` INT(10) UNSIGNED NOT NULL,
+	`tieude` VARCHAR(200) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`ten_bhat` VARCHAR(100) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`ten_tloai` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`ten_tgia` VARCHAR(100) NOT NULL COLLATE 'utf8mb4_general_ci'
+) ENGINE=MyISAM;
+
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='';
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` TRIGGER tg_CapNhatTheLoai
+AFTER INSERT ON baiviet
+FOR EACH ROW
+BEGIN
+  DECLARE v_ma_tloai INT;
+  
+  SELECT ma_tloai INTO v_ma_tloai
+  FROM baiviet
+  WHERE ma_bviet = NEW.ma_bviet;
+
+  UPDATE theloai
+  SET SLBaiViet = (SELECT COUNT(*) FROM baiviet WHERE ma_tloai = v_ma_tloai)
+  WHERE ma_tloai = v_ma_tloai;
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vw_music` AS SELECT baiviet.ma_bviet, baiviet.tieude, baiviet.ten_bhat, theloai.ten_tloai, tacgia.ten_tgia
+FROM baiviet
+JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai
+JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia ;
