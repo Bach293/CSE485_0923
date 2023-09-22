@@ -1,0 +1,62 @@
+.row, .row>*{
+    padding: 0;
+    margin: 0;
+}
+a:-webkit-any-link{
+    font-weight: bold;
+}
+.posts{
+    border: 1px solid #d4d4d4;
+    border-radius: 10px;
+}
+.posts a{
+    text-decoration: none;
+    font-weight: 600;
+    color: #2185e1;
+}
+.posts>p{
+    margin-top:20px;
+    margin-bottom:20px;
+}
+hr {
+    border-style: solid; /* Đặt kiểu đường viền thành đứng */
+    border-width: 2px; /* Đặt độ dày đường viền */
+}
+#detail-content{
+    padding: 50px;
+    box-shadow: inset 3px 17px 3px rgba(0, 0, 0, 0.1);
+}
+#form_login{
+    width: 500px;
+    height: 550px;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1%;
+    background-color: #7f7f7f;
+    border-radius: 5px;
+}
+#form_login >form p{
+    color: white;
+    
+}
+#form_login >form a{
+    color: rgb(207, 200, 4);
+    text-decoration: none;
+    
+}
+#form-icon{
+    position: absolute;
+    color: #ffc312;
+    font-size: 50px;
+    top: 2%;
+    left: 52%;
+    z-index: 1;
+}
+#admin_content{
+    padding: 80px;
+    box-shadow: inset 3px 17px 3px rgba(0, 0, 0, 0.1);
+}
+#login_content{
+    box-shadow: inset 3px 17px 3px rgba(0, 0, 0, 0.1);
+}
